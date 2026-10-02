@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: trademind
+      POSTGRES_USER: trademind
+      POSTGRES_PASSWORD: change-me
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trademind -d trademind"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://trademind:change-me@db:5432/trademind
+      DATABASE_SSL: "false"
+      CORS_ORIGIN: http://localhost:3000
+      AI_PROVIDER: openai
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_API_URL: https://api.openai.com/v1/responses
+      AI_MODEL: ${AI_MODEL:-gpt-5.6-luna}
+      ECONOMIC_CALENDAR_PROVIDER: ${ECONOMIC_CALENDAR_PROVIDER:-}
+      ECONOMIC_CALENDAR_URL: ${ECONOMIC_CALENDAR_URL:-}
+      ECONOMIC_CALENDAR_API_KEY: ${ECONOMIC_CALENDAR_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  pgdata:

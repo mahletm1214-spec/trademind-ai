@@ -1,0 +1,19 @@
+{
+  "name": "trademind-ai-v33-public-ready",
+  "version": "33.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/migrate.js && node server/index.js",
+    "dev": "node --watch server/index.js",
+    "migrate": "node scripts/migrate.js",
+    "verify-env": "node scripts/verify-env.js",
+    "test:smoke": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
