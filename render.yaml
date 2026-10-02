@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: trademind-ai
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/ready
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_SSL
+        value: "true"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: AI_PROVIDER
+        value: openai
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_API_URL
+        value: https://api.openai.com/v1/responses
+      - key: AI_MODEL
+        value: gpt-5.6-luna
+      - key: ECONOMIC_CALENDAR_URL
+        sync: false
+      - key: ECONOMIC_CALENDAR_API_KEY
+        sync: false
+      - key: ECONOMIC_CALENDAR_PROVIDER
+        sync: false
+      - key: TRUST_PROXY
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: trademind-db
+          property: connectionString
+
+databases:
+  - name: trademind-db
+    plan: free
+    databaseName: trademind
+    user: trademind
