@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeMind AI — Black × Yellow ICT Workspace</title>
+<style>
+:root{--bg:#08111f;--panel:#0d1a2d;--panel2:#101f35;--line:#20334d;--text:#e8eef8;--muted:#8fa2bb;--accent:#62d5ff;--green:#39d98a;--red:#ff6b7a;--amber:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#07101d,#0a1628);color:var(--text);font:14px Inter,system-ui,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#091524ee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;gap:24px}
+.logo{font-weight:800;font-size:19px;white-space:nowrap}.logo span{color:var(--accent)}
+nav{display:flex;gap:5px;overflow:auto}nav button{background:none;border:0;color:var(--muted);padding:9px 12px;border-radius:9px;cursor:pointer}nav button.active,nav button:hover{background:#14263e;color:white}
+main{max-width:1400px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}
+h1{margin:0 0 6px;font-size:27px}.sub{color:var(--muted);margin-bottom:20px}.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:linear-gradient(180deg,#0f1d31,#0b1728);border:1px solid var(--line);border-radius:14px;padding:16px}.card h3{margin:0 0 12px;font-size:15px}.muted{color:var(--muted)}.big{font-size:25px;font-weight:800}.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#162941;color:#b9c9dd;font-size:12px}.good{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}
+.bar{height:7px;background:#1a2a40;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.steps{display:grid;grid-template-columns:repeat(9,1fr);gap:7px}.step{padding:11px 8px;border:1px solid var(--line);border-radius:10px;background:#0b1728;text-align:center}.step.done{border-color:#287d65;background:#10271f}.step .num{font-size:11px;color:var(--muted)}.step strong{display:block;font-size:11px;margin-top:5px}
+label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}input,select,textarea{width:100%;background:#081321;color:white;border:1px solid var(--line);border-radius:9px;padding:10px;outline:none}textarea{min-height:85px;resize:vertical}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.check{display:flex;gap:8px;align-items:center;background:#0a1626;border:1px solid var(--line);padding:9px;border-radius:9px}.check input{width:auto}.btn{border:0;border-radius:9px;padding:10px 14px;background:#17324d;color:white;cursor:pointer}.btn.primary{background:#16789d}.btn.green{background:#16734e}.btn.danger{background:#71333e}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}.table th{color:var(--muted);font-size:12px}.metric{padding:13px;border:1px solid var(--line);border-radius:10px}.metric small{display:block;color:var(--muted);margin-bottom:5px}
+.ai{border-color:#31536f;background:linear-gradient(135deg,#10263b,#0b1828)}.ai strong{color:var(--accent)}
+@media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(3,1fr)}}@media(max-width:560px){main{padding:14px}.g4,.g3,.g2{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}header{padding:11px}}
+</style>
+
+<style>
+.stack{display:flex;flex-direction:column;gap:10px}.metric{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.metric b{font-size:24px;display:block}.metric span{color:var(--muted);font-size:12px}.warn{border-left:3px solid #eab308}.good{border-left:3px solid #22c55e}.info{border-left:3px solid #60a5fa}.jsonbox{max-height:280px;overflow:auto;background:#080b12;padding:14px;border-radius:12px;font-size:12px;color:#cbd5e1}.coach-box{line-height:1.6;color:#dbe4f0}.bar{height:7px;background:#1b2230;border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:8px}
+</style>
+<style>
+#production .codebox{white-space:pre-wrap;overflow:auto;background:#0b1020;border:1px solid rgba(255,255,255,.08);padding:16px;border-radius:14px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}.flow span,.tags span{padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(255,255,255,.035)}.flow i{opacity:.55}.stack{display:grid;gap:10px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.pill{font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.1)}.tags{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+
+<style id="premium-black-yellow">
+:root{--bg:#050505;--panel:#0b0b0b;--panel2:#111111;--line:#26220b;--text:#f7df72;--muted:#aaa58d;--accent:#ffd21a;--green:#ffd21a;--red:#ffcc33;--amber:#ffd21a}
+html{background:#050505}body{background:radial-gradient(circle at 50% -20%,rgba(255,210,26,.09),transparent 34%),linear-gradient(135deg,#030303,#090909 55%,#050505);color:var(--text)}
+header{background:rgba(3,3,3,.97);border-bottom:1px solid #332d0b;box-shadow:0 8px 30px rgba(0,0,0,.45);padding:14px 24px 10px;gap:28px;align-items:flex-start}.nav-shell{flex:1;min-width:0}.nav-kicker{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#6f684c;margin-bottom:5px}.nav-kicker span{color:var(--accent);padding:0 4px}.main-nav{display:flex;gap:10px;overflow:auto;align-items:center}.main-nav button{font-size:20px;font-weight:950;letter-spacing:-.35px;padding:12px 18px;border-radius:12px;min-height:48px}.sub-nav{display:flex;gap:8px;overflow:auto;margin-top:10px;padding:0 0 4px 2px;border-top:1px solid #211e0b;padding-top:8px}.sub-nav button{font-size:13px;font-weight:800;padding:7px 12px;border-radius:9px;letter-spacing:.1px}
+.logo{color:#fff5bd;letter-spacing:.2px;font-size:22px;font-weight:900}.logo span{color:var(--accent);text-shadow:0 0 18px rgba(255,210,26,.28)}
+nav button{color:#8f8b77;border:1px solid transparent}nav button.active,nav button:hover{background:rgba(255,210,26,.08);color:var(--accent);border-color:#4a400f;box-shadow:0 0 16px rgba(255,210,26,.07)}
+nav button.active{position:relative}nav button.active:after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;background:var(--accent);box-shadow:0 0 10px rgba(255,210,26,.65);border-radius:2px}
+main{max-width:1450px}.page h1{color:#ffe77a;text-shadow:0 0 24px rgba(255,210,26,.08)}.sub{color:#98937c}
+.card{background:linear-gradient(145deg,rgba(18,18,18,.97),rgba(8,8,8,.97));border:1px solid #29240c;box-shadow:0 10px 35px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.018)}.card:hover{border-color:#40370e}
+.metric{background:linear-gradient(145deg,#11110f,#090909);border-color:#30290b}.metric b,.big{color:#ffe26a}.metric small,.card label,.table th,.muted,.metric span{color:#9b967f}
+.pill{background:#171506;color:#e8cf58;border:1px solid #39310b}.good,.warn,.bad{color:#ffd21a}
+.bar{background:#1b190d}.bar i{background:linear-gradient(90deg,#a98700,#ffd21a,#fff0a0);box-shadow:0 0 12px rgba(255,210,26,.28)}
+.step{background:#090909;border-color:#29240c;color:#cfc48c}.step.done{border-color:#77600d;background:linear-gradient(145deg,#181503,#0b0b08);box-shadow:0 0 14px rgba(255,210,26,.06)}.step .num{color:#7f795f}
+input,select,textarea{background:#070707;color:#f8e58a;border-color:#2b260d}input:focus,select:focus,textarea:focus{border-color:#b59610;box-shadow:0 0 0 2px rgba(255,210,26,.07)}
+.check{background:#090909;border-color:#29240c;color:#d9cc91}.check:has(input:checked){border-color:#806a12;background:#141207;box-shadow:inset 0 0 18px rgba(255,210,26,.035)}.check input{accent-color:#ffd21a}
+.btn{background:#171506;color:#ffe98b;border:1px solid #4a3e0d}.btn:hover{border-color:#9a7d0d;box-shadow:0 0 16px rgba(255,210,26,.08)}.btn.primary,.btn.green,.btn.danger{background:#d3a900;color:#050505;border:0;font-weight:800}.btn.primary:hover,.btn.green:hover,.btn.danger:hover{background:#ffd21a}
+.ai{border-color:#5b490c;background:radial-gradient(circle at 85% 15%,rgba(255,210,26,.12),transparent 30%),linear-gradient(145deg,#151307,#090909);box-shadow:0 0 30px rgba(255,210,26,.05)}.ai strong{color:#ffd21a}.ai h3{color:#ffe57a}
+.table td{border-bottom-color:#29240c;color:#ded18e}.table tr:hover td{background:rgba(255,210,26,.025)}
+.jsonbox{background:#050505;color:#ded18e;border:1px solid #25210d}.coach-box{color:#ded7b7}
+.info,.warn,.good{border-left-color:#d3a900}
+::selection{background:#ffd21a;color:#050505}
+#subnav button{color:#817b64;background:transparent;border:1px solid transparent}#subnav button:hover,#subnav button.active{color:#f5d54e;background:rgba(255,210,26,.045);border-color:#332d0b}.main-nav button.active{background:rgba(255,210,26,.10);border-color:#5b490c;color:#ffd21a;box-shadow:0 0 22px rgba(255,210,26,.08)}
+@media(max-width:900px){header{overflow-x:auto}.nav-shell{min-width:760px}nav{min-width:max-content}}
+@media(max-width:560px){.logo{font-size:19px}.main-nav button{font-size:16px;padding:9px 13px;min-height:42px}.sub-nav button{font-size:11px}}
+</style>
+
+<style id="v18-auth">
+.authbar{display:flex;align-items:center;gap:8px;margin-left:auto}.auth-user{font-size:12px;color:#d9cc91;border:1px solid #332d0b;border-radius:999px;padding:7px 10px;background:#0b0b08}.auth-modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px}.auth-modal.hidden{display:none}.auth-card{width:min(440px,100%);background:linear-gradient(145deg,#141308,#080808);border:1px solid #55470d;border-radius:18px;padding:24px;box-shadow:0 20px 70px rgba(0,0,0,.65),0 0 35px rgba(255,210,26,.08)}.auth-card h2{margin:0 0 5px;color:#ffe77a}.auth-card p{color:#9b967f}.auth-card .auth-error{min-height:18px;color:#ffd21a;font-size:12px;margin-top:8px}.auth-tabs{display:flex;gap:6px;margin:15px 0}.auth-tabs button{flex:1}.auth-note{font-size:11px;color:#77715d;margin-top:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">TradeMind <span>AI</span></div>
+  <div class="nav-shell"><div class="nav-kicker">TRADEMIND AI <span>•</span> ICT TRADING WORKSPACE</div><nav id="nav" class="main-nav" aria-label="Main navigation"></nav><nav id="subnav" class="sub-nav" aria-label="ICT workspace navigation"></nav></div><div class="authbar"><span id="authUser" class="auth-user">Not signed in</span><button id="authAction" class="btn" onclick="openAuth()">Sign in</button></div>
+</header>
+<div id="authModal" class="auth-modal hidden" role="dialog" aria-modal="true"><div class="auth-card"><h2>TradeMind <span style="color:#ffd21a">AI</span></h2><p id="authTitle">Sign in to your private ICT workspace.</p><div class="auth-tabs"><button class="btn primary" id="loginTab" onclick="setAuthMode('login')">Sign in</button><button class="btn" id="registerTab" onclick="setAuthMode('register')">Create account</button></div><form id="authForm" onsubmit="submitAuth(event)"><label>Email</label><input id="authEmail" type="email" required autocomplete="email"><label>Password</label><input id="authPassword" type="password" minlength="8" required autocomplete="current-password"><div id="authNameWrap" style="display:none"><label>Display name</label><input id="authName" autocomplete="name"></div><button class="btn primary" style="width:100%;margin-top:14px" id="authSubmit">Sign in</button><div id="authError" class="auth-error"></div></form><div class="auth-note">Your trades, AI reviews and analytics are isolated to your account. API keys stay server-side and are never stored in browser code.</div></div></div><main>
+<section id="dashboard" class="page active">
+<div class="row" style="justify-content:space-between;align-items:flex-end"><div><h1>ICT Dashboard 2.0</h1><div class="sub">Your trade should move through a process — not a guess.</div></div><span class="pill" id="dashboardDataSource">Local journal data</span></div>
+<div class="card">
+  <div class="row" style="justify-content:space-between"><h3>Execution Chain</h3><span class="pill" id="progressPill">0% complete</span></div>
+  <div class="steps" id="steps"></div>
+  <div style="margin-top:12px" class="bar"><i id="progressBar" style="width:0%"></i></div>
+</div>
+<br>
+<div class="grid g4" id="journalDashboardStats">
+ <div class="card metric"><small>Total Trades</small><div class="big" id="dashTotalTrades">0</div><span>Journal records</span></div>
+ <div class="card metric"><small>Win Rate</small><div class="big" id="dashWinRate">0%</div><span id="dashWinRateMeta">0 wins / 0 decided</span></div>
+ <div class="card metric"><small>Wins</small><div class="big" id="dashWins">0</div><span>Closed winning trades</span></div>
+ <div class="card metric"><small>Losses</small><div class="big" id="dashLosses">0</div><span>Closed losing trades</span></div>
+</div><br>
+<div class="grid g4">
+ <div class="card metric"><small>HTF Bias</small><div class="big" id="biasOut">Not set</div></div>
+ <div class="card metric"><small>Draw on Liquidity</small><div class="big" id="dolOut">Not set</div></div>
+ <div class="card metric"><small>Kill Zone</small><div class="big" id="kzOut">Not set</div></div>
+ <div class="card metric"><small>Selected Model</small><div class="big" id="modelOut">Not set</div></div>
+</div><br>
+<div class="grid g2">
+ <div class="card"><h3>Liquidity Map</h3><div class="grid g2">
+  <div class="metric"><small>BSL</small><b id="bsl">—</b></div><div class="metric"><small>SSL</small><b id="ssl">—</b></div>
+  <div class="metric"><small>PDH / PDL</small><b id="pdhpdl">—</b></div><div class="metric"><small>Asia H / L</small><b id="asiah">—</b></div>
+ </div></div>
+ <div class="card ai"><h3>AI Pre-Trade Coach</h3><p id="aiPre">Complete your checklist. AI will flag missing confluence before you execute.</p><div class="row"><span class="pill">Process score</span><b id="score">0/100</b></div></div>
+</div>
+</section>
+
+<section id="trade" class="page">
+<h1>Trade Planner</h1><div class="sub">Build the setup before placing the order.</div>
+<div class="grid g2">
+<div class="card"><h3>1 — Context</h3>
+<label>HTF Bias</label><select id="bias"><option value="">Select</option><option>Bullish</option><option>Bearish</option><option>Neutral</option></select>
+<label>Draw on Liquidity</label><select id="dol"><option value="">Select</option><option>BSL</option><option>SSL</option><option>Internal Liquidity</option><option>External Liquidity</option></select>
+<label>Dealing Range</label><input id="range" placeholder="e.g. Weekly high / low">
+<label>Price Location</label><select id="pd"><option value="">Select</option><option>Premium</option><option>Discount</option><option>Equilibrium</option></select>
+</div>
+<div class="card"><h3>2 — Timing & Model</h3>
+<label>Direction</label><select id="direction"><option>LONG</option><option>SHORT</option></select>
+<label>Kill Zone</label><select id="kz"><option value="">Select</option><option>London</option><option>New York AM</option><option>New York PM</option><option>Silver Bullet</option><option>Outside KZ</option></select>
+<label>ICT Model</label><select id="model"><option value="">Select</option><option>ICT 2022 Model</option><option>Silver Bullet</option><option>OTE</option><option>MMXM</option><option>Power of 3 / AMD</option><option>CRT</option><option>TGIF</option><option>Custom ICT Model</option></select>
+<label>Liquidity Event</label><select id="liq"><option>None</option><option>BSL Sweep</option><option>SSL Sweep</option><option>Equal High Sweep</option><option>Equal Low Sweep</option><option>Judas Swing</option></select>
+</div>
+</div><br>
+<div class="card"><h3>3 — Confirmation Checklist</h3><div class="checks" id="checks">
+<label class="check"><input type="checkbox" data-k="biasC"> HTF bias is clear</label>
+<label class="check"><input type="checkbox" data-k="liqC"> Liquidity objective is clear</label>
+<label class="check"><input type="checkbox" data-k="pdC"> Price location makes sense</label>
+<label class="check"><input type="checkbox" data-k="sweepC"> Liquidity sweep occurred</label>
+<label class="check"><input type="checkbox" data-k="mssC"> MSS / CHOCH confirmed</label>
+<label class="check"><input type="checkbox" data-k="dispC"> Displacement confirmed</label>
+<label class="check"><input type="checkbox" data-k="fvgC"> FVG / PD array identified</label>
+<label class="check"><input type="checkbox" data-k="riskC"> Risk and invalidation defined</label>
+</div></div><br>
+<div class="grid g3">
+<div class="card"><h3>4 — Entry</h3><label>Structure</label><select id="structure"><option>MSS</option><option>CHOCH</option><option>BOS</option><option>None</option></select><label>PD Array</label><select id="array"><option>FVG</option><option>Order Block</option><option>Breaker</option><option>IFVG</option><option>BPR</option><option>OTE</option></select><label>Entry</label><input id="entry" placeholder="price"></div>
+<div class="card"><h3>5 — Risk</h3><label>Stop Loss</label><input id="sl" placeholder="price"><label>Risk %</label><input id="risk" type="number" step=".1" placeholder="1"><label>Invalidation</label><input id="invalid" placeholder="What proves the idea wrong?"></div>
+<div class="card"><h3>6 — Target</h3><label>Target / DOL</label><input id="target" placeholder="liquidity target"><label>Outcome</label><select id="outcome"><option>Planned</option><option>Win</option><option>Loss</option><option>Breakeven</option></select><label>RR Planned</label><input id="rr" placeholder="e.g. 3R"><label>Realized R</label><input id="realizedR" type="number" step="0.01" placeholder="e.g. 2.5"><label>Realized P/L</label><input id="pnl" type="number" step="0.01" placeholder="account currency"><label>Notes</label><textarea id="notes" placeholder="Why this trade exists"></textarea></div>
+</div><br>
+<div class="row"><button class="btn primary" onclick="savePlan()">Save Trade Plan</button><button class="btn green" onclick="reviewAI()">Run AI Review</button><button class="btn danger" onclick="resetPlan()">Reset</button></div>
+<div class="card ai" style="margin-top:14px"><h3>AI Review</h3><div id="review">No review yet.</div></div>
+</section>
+
+<section id="journal" class="page">
+<h1>Trade Journal</h1><div class="sub">Every trade becomes structured data for your future edge.</div>
+<div class="card"><table class="table"><thead><tr><th>Date</th><th>Model</th><th>Bias</th><th>KZ</th><th>Result</th><th>Process</th></tr></thead><tbody id="journalRows"></tbody></table></div>
+</section>
+
+<section id="analytics" class="page">
+<div class="page-head"><div><div class="eyebrow">V26 · PERFORMANCE ENGINE</div><h1>ICT Analytics</h1><div class="sub">Measure the process behind the P&amp;L — using closed Journal trades only.</div></div><div class="row"><select id="performanceRange" onchange="loadPerformanceAnalytics()"><option value="0">All Time</option><option value="7">7D</option><option value="30">30D</option><option value="90">3M</option><option value="180">6M</option><option value="365">1Y</option></select><button class="btn primary" onclick="loadPerformanceAnalytics()">Refresh</button></div></div>
+<div class="grid g4" id="analyticsCards"></div><br>
+<div class="grid g4" id="performanceCards"></div><br>
+<div class="card"><div class="row"><div><h3 style="margin:0">Equity Curve</h3><span class="muted" id="equityCurveDescription">Production mode: cumulative R from actual closed Journal trades. Starting point = 0R.</span></div><span class="pill" id="performanceDataStatus">Production · waiting for database</span></div><div id="equityChart" style="margin-top:16px;min-height:280px"></div><div id="equityDemoNote" class="muted" style="display:none;margin-top:8px">Demo preview only — these points are illustrative and are never saved to PostgreSQL or used in production analytics.</div></div><br>
+<div class="grid g3"><div class="card"><h3>ICT Model Performance</h3><div id="modelPerformance"></div></div><div class="card"><h3>Kill Zone Performance</h3><div id="killZonePerformance"></div></div><div class="card"><h3>Direction Performance</h3><div id="directionPerformance"></div></div></div><br>
+<div class="grid g2"><div class="card"><h3>Model Performance</h3><div id="modelStats"></div></div><div class="card"><h3>Execution Leaks</h3><div id="leaks"></div></div></div>
+</section>
+
+<section id="coach" class="page">
+<h1>AI Coach — ICT Vision Workspace</h1><div class="sub">Upload a chart, annotate the ICT idea, and run a structured visual review before saving the trade.</div>
+<div class="grid g2">
+<div class="card">
+<h3>1 — Chart Upload</h3>
+<input id="chartFile" type="file" accept="image/*" onchange="previewChart(event)">
+<div id="chartPreview" style="margin-top:12px"></div>
+<div class="muted" style="margin-top:8px">Prototype stores the selected image only in this browser session.</div>
+</div>
+<div class="card">
+<div class="card ai" style="margin-bottom:14px"><h3>V8 — AI Analysis Pipeline</h3><div class="sub">Chart → Vision Adapter → Structured ICT JSON → AI Coach → Journal → Analytics</div><div class="grid g4" style="margin-top:12px"><div><small>Vision Adapter</small><strong id="v8Adapter">Mock / Browser</strong></div><div><small>Structured Output</small><strong id="v8JsonStatus">Waiting</strong></div><div><small>Coach Input</small><strong id="v8CoachStatus">Waiting</strong></div><div><small>Journal Sync</small><strong id="v8JournalStatus">Waiting</strong></div></div></div>
+<div class="card"><h3>Structured ICT Analysis</h3><pre id="ictJson" style="white-space:pre-wrap;max-height:260px;overflow:auto;background:#0b1020;padding:14px;border-radius:10px">Run Vision Review to generate the structured analysis.</pre><button class="btn" onclick="copyICTJSON()">Copy ICT JSON</button> <button class="btn primary" onclick="saveVisionToJournal()">Save Analysis to Journal</button></div><br><h3>2 — ICT Vision Checklist</h3>
+<div class="checks" id="visionChecks">
+<label class="check"><input type="checkbox"> BSL / SSL liquidity visible</label>
+<label class="check"><input type="checkbox"> Liquidity sweep visible</label>
+<label class="check"><input type="checkbox"> MSS / CHOCH / BOS visible</label>
+<label class="check"><input type="checkbox"> Displacement visible</label>
+<label class="check"><input type="checkbox"> FVG / PD Array visible</label>
+<label class="check"><input type="checkbox"> Entry in planned location</label>
+<label class="check"><input type="checkbox"> Target is liquidity-based</label>
+<label class="check"><input type="checkbox"> Invalidation is clear</label>
+</div>
+<button class="btn primary" style="margin-top:12px" onclick="runVisionReview()">Run Vision Review</button>
+</div>
+</div><br>
+<div class="grid g4">
+<div class="card metric"><small>Vision Score</small><div class="big" id="visionScore">—</div></div>
+<div class="card metric"><small>Setup Status</small><div class="big" id="setupStatus">Not reviewed</div></div>
+<div class="card metric"><small>Confluence</small><div class="big" id="confluence">—</div></div>
+<div class="card metric"><small>Missing Items</small><div class="big" id="missingVision">—</div></div>
+</div><br>
+<div class="card ai"><h3>AI Vision Review</h3><div id="visionReview">Upload a chart and complete the visual checklist.</div></div><br>
+<div class="grid g2">
+<div class="card"><h3>Detected Setup</h3><div id="detectedSetup" class="muted">No setup detected yet.</div></div>
+<div class="card"><h3>Next Action</h3><div id="visionAction" class="muted">Complete the review first.</div></div>
+</div><br>
+<h1>AI Coach — ICT Performance Engine</h1><div class="sub">Grade the process, detect recurring execution leaks, and turn each trade into a learning loop.</div>
+<div class="grid g4">
+ <div class="card metric"><small>Process Grade</small><div class="big" id="gradeOut">—</div></div>
+ <div class="card metric"><small>Model Adherence</small><div class="big" id="adhOut">—</div></div>
+ <div class="card metric"><small>Risk Discipline</small><div class="big" id="riskOut">—</div></div>
+ <div class="card metric"><small>Recurring Leak</small><div class="big" id="leakOut">—</div></div>
+</div><br>
+<div class="grid g2">
+<div class="card ai"><h3>AI Trade Grade</h3><div id="gradeDetail">Create a plan and run AI Review.</div></div>
+<div class="card"><h3>Screenshot / Chart Review</h3>
+<label>Chart observations</label><textarea id="chartNotes" placeholder="Describe what you see: liquidity sweep, displacement, FVG, MSS, entry location..."></textarea>
+<label>What did price do after entry?</label><select id="postMove"><option>Not reviewed</option><option>Reached target</option><option>Stopped before target</option><option>Moved sideways</option><option>Invalidated thesis</option></select>
+<button class="btn primary" style="margin-top:10px" onclick="reviewChart()">Analyze Chart Notes</button>
+<div id="chartReview" class="muted" style="margin-top:12px">No chart review yet.</div>
+</div>
+</div><br>
+<div class="card"><h3>Detected Execution Leaks</h3><div id="detectedLeaks"></div></div><br>
+<h1>AI Coach</h1><div class="sub">A process-focused review layer for your journal.</div>
+<div class="grid g2"><div class="card ai"><h3>Today’s Coaching</h3><div id="coachText"></div></div><div class="card"><h3>Review Rules</h3><ul class="muted"><li>Model adherence</li><li>Liquidity thesis</li><li>Confirmation quality</li><li>Risk discipline</li><li>Execution timing</li><li>Recurring mistakes</li></ul></div></div>
+</section>
+
+<section id="goals" class="page">
+<div class="page-head"><div><div class="eyebrow">V29 · TRADER GOALS</div><h1>Goals & Process Commitments</h1><div class="sub">Turn your journal evidence into measurable process goals. Goals are personal tracking tools — not trade signals.</div></div><button class="primary" onclick="loadGoals()">Refresh Goals</button></div>
+<div class="grid g4" id="goalStats"></div><br>
+<div class="grid g2"><div class="card"><h3>Create Goal</h3><label>Goal</label><input id="goalTitle" placeholder="e.g. Journal every executed trade"><label>Type</label><select id="goalType"><option>PROCESS</option><option>PERFORMANCE</option><option>RISK</option><option>LEARNING</option></select><div class="grid g2"><div><label>Target</label><input id="goalTarget" type="number" step="0.01" placeholder="20"></div><div><label>Current</label><input id="goalCurrent" type="number" step="0.01" placeholder="0"></div></div><div class="grid g2"><div><label>Unit</label><input id="goalUnit" placeholder="trades / days / %"></div><div><label>Deadline</label><input id="goalDeadline" type="date"></div></div><label>Notes</label><textarea id="goalNotes" rows="3" placeholder="What behavior will make this goal measurable?"></textarea><button class="btn primary" onclick="saveGoal()">Save Goal</button><span id="goalStatus" class="pill" style="margin-left:8px"></span></div><div class="card"><h3>Goal Dashboard</h3><div id="goalList" class="stack"></div></div></div>
+</section>
+
+<section id="backtest" class="page">
+<h1>ICT Backtest Lab</h1><div class="sub">Compare your tested setup with live execution.</div>
+<div class="grid g4"><div class="card"><label>Model</label><select id="btModel"><option>ICT 2022 Model</option><option>Silver Bullet</option><option>OTE</option><option>MMXM</option><option>Power of 3</option><option>CRT</option><option>TGIF</option><option>Custom ICT Model</option></select></div><div class="card"><label>Sample Size</label><input id="btN" type="number" value="50"></div><div class="card"><label>Wins</label><input id="btWins" type="number" value="30"></div><div class="card"><label>Losses</label><input id="btLosses" type="number" value="20"></div></div><div class="grid g3" style="margin-top:12px"><div class="card"><label>Breakeven</label><input id="btBE" type="number" value="0"></div><div class="card"><label>Total R</label><input id="btTotalR" type="number" step="0.01" placeholder="e.g. 18"></div><div class="card"><label>Notes</label><input id="btNotes" placeholder="Test conditions / session / rules"></div></div><br>
+<button class="btn primary" onclick="addBacktest()">Save Backtest Sample</button><span id="btStatus" class="pill" style="margin-left:8px"></span><div class="card" style="margin-top:14px"><table class="table"><thead><tr><th>Model</th><th>Samples</th><th>W/L/BE</th><th>Win Rate</th><th>Total R</th><th>Logged</th></tr></thead><tbody id="btRows"></tbody></table></div>
+</section>
+
+<section id="calendar" class="page"><h1>ICT Daily Context</h1><div class="sub">A simple daily planning board — combine with your own market data.</div><div class="grid g3">
+<div class="card"><h3>Pre-Market</h3><div class="checks"><label class="check"><input type="checkbox"> Mark PDH / PDL</label><label class="check"><input type="checkbox"> Mark Asia H/L</label><label class="check"><input type="checkbox"> Define HTF bias</label></div></div>
+<div class="card"><h3>Session</h3><div class="checks"><label class="check"><input type="checkbox"> Identify liquidity event</label><label class="check"><input type="checkbox"> Wait for confirmation</label><label class="check"><input type="checkbox"> Execute only planned model</label></div></div>
+<div class="card"><h3>Post-Market</h3><div class="checks"><label class="check"><input type="checkbox"> Screenshot trade</label><label class="check"><input type="checkbox"> Journal execution</label><label class="check"><input type="checkbox"> AI review</label></div></div>
+</div></section>
+
+<section id="economic" class="page">
+<h1>Economic Calendar</h1><div class="sub">News context for ICT execution — track high-impact events alongside Kill Zones, liquidity and journal outcomes.</div>
+<div class="grid g3">
+<div class="card"><label>Date</label><input id="econDate" type="date"></div>
+<div class="card"><label>Impact</label><select id="econImpact"><option>High</option><option>Medium</option><option>Low</option></select></div>
+<div class="card"><label>Currency</label><select id="econCurrency"><option>USD</option><option>CAD</option><option>EUR</option><option>GBP</option><option>JPY</option><option>AUD</option></select></div>
+</div><br>
+<div class="grid g3">
+<div class="card"><label>Event</label><input id="econEvent" placeholder="e.g. CPI / NFP / FOMC"></div>
+<div class="card"><label>Time</label><input id="econTime" type="time"></div>
+<div class="card"><label>Session</label><select id="econSession"><option>New York</option><option>London</option><option>Asia</option><option>Pre-market</option></select></div>
+</div><br>
+<button class="btn primary" onclick="addEconomicEvent()">Add Event</button>
+<div class="card" style="margin-top:14px"><h3>Upcoming / Logged Events</h3><table class="table"><thead><tr><th>Date</th><th>Time</th><th>Impact</th><th>Currency</th><th>Event</th><th>Session</th><th>ICT Context</th></tr></thead><tbody id="econRows"></tbody></table></div>
+<div class="grid g2" style="margin-top:14px"><div class="card"><h3>ICT News Guardrail</h3><div id="econGuardrail" class="ai"></div></div><div class="card"><h3>Calendar → Journal</h3><p class="muted">Economic events are saved with your local journal data so you can compare execution quality on news days versus normal days.</p><button class="btn" onclick="go('journal',document.querySelector('nav button:nth-child(3)'))">Open Journal</button></div></div>
+</section>
+
+<section id="reports" class="page"><div class="page-head"><div><div class="eyebrow">V31 · REPORTING & QA</div><h1>Performance Reports</h1><div class="sub">A single evidence-based report across Journal, ICT execution, reflections and economic-event context.</div></div><div class="row"><select id="reportRange" onchange="loadReports()"><option value="7">7D</option><option value="30" selected>30D</option><option value="90">3M</option><option value="365">1Y</option></select><button class="btn primary" onclick="loadReports()">Refresh Report</button></div></div><div class="grid g4" id="reportCards"></div><br><div class="grid g2"><div class="card"><h3>ICT Model Mix</h3><div id="reportModels"></div></div><div class="card"><h3>Kill Zone Mix</h3><div id="reportKillzones"></div></div></div><br><div class="card"><h3>Recent Reflection Evidence</h3><div id="reportReflections" class="stack"></div></div><br><div class="card"><div class="row"><h3 style="margin:0">Economic Event Correlation</h3><span class="pill" id="correlationStatus">Waiting</span></div><p class="muted">Shows logged trades occurring within ±4 hours of stored economic events. This is descriptive context, not a signal.</p><div class="grid g3" id="correlationCards"></div><div id="correlationRows" class="stack" style="margin-top:12px"></div></div></section>
+
+<section id="reflection" class="page">
+  <div class="page-head"><div><div class="eyebrow">V27 · DAILY JOURNAL & REFLECTION</div><h1>Daily Reflection</h1><p>Turn each trading day into structured learning — then feed the lessons back into your Personal Trader Profile.</p></div><button class="primary" onclick="loadReflection()">Refresh</button></div>
+  <div class="grid cols-4" id="reflectionStats"></div>
+  <div class="grid cols-2">
+    <div class="card"><div class="card-title">Today's Reflection</div><label>What happened today?</label><textarea id="reflectionHappened" rows="4" placeholder="Market context, executions, emotions, mistakes..."></textarea><label>What did I learn?</label><textarea id="reflectionLearned" rows="3" placeholder="The clearest lesson from today..."></textarea><label>What did I do well?</label><textarea id="reflectionGood" rows="3" placeholder="Process behaviors you want to repeat..."></textarea><label>What should I not repeat?</label><textarea id="reflectionAvoid" rows="3" placeholder="Specific behavior or execution leak..."></textarea><label>What will I follow next session?</label><textarea id="reflectionNext" rows="3" placeholder="One or two concrete process commitments..."></textarea><button class="btn primary" onclick="saveReflection()">Save Daily Reflection</button><span id="reflectionStatus" class="pill" style="margin-left:8px"></span></div>
+    <div class="card"><div class="card-title">AI Coach Feedback Loop</div><div id="reflectionCoach" class="coach-box">Save today's reflection to generate a journal-based feedback summary.</div><button class="btn" onclick="generateReflectionInsight()">Generate AI Coach Feedback</button></div>
+  </div>
+  <div class="card"><div class="card-title">Reflection History</div><div id="reflectionHistory" class="stack"></div></div>
+</section>
+
+<section id="weekly" class="page">
+  <div class="page-head"><div><div class="eyebrow">V28 · AI COACH</div><h1>Weekly Trader Review</h1><p>Review your recorded execution and reflections as one process-focused coaching cycle.</p></div><button class="primary" onclick="loadWeeklyCoach()">Refresh Review</button></div>
+  <div class="row" style="margin-bottom:14px"><select id="weeklyRange" onchange="loadWeeklyCoach()"><option value="7">Last 7 Days</option><option value="14">Last 14 Days</option><option value="30">Last 30 Days</option></select><span id="weeklyStatus" class="pill">Waiting for journal data</span></div>
+  <div class="grid cols-4" id="weeklyStats"></div>
+  <div class="grid cols-2"><div class="card"><div class="card-title">Recurring Execution Patterns</div><div id="weeklyLeaks" class="stack"></div></div><div class="card"><div class="card-title">Current Process Focus</div><div id="weeklyFocus" class="coach-box"></div></div></div>
+  <div class="grid cols-2"><div class="card"><div class="card-title">ICT Model Usage</div><div id="weeklyModels" class="stack"></div></div><div class="card"><div class="card-title">Reflection Coverage</div><div id="weeklyReflection" class="stack"></div></div></div>
+</section>
+
+<section id="personal" class="page">
+  <div class="page-head"><div><div class="eyebrow">V25 · PERSONAL TRADER PROFILE</div><h1>Your Personal Trader Profile</h1><p>Journal + Analytics + AI Coach + Reflection → one evidence-based ICT performance profile.</p></div><button class="primary" onclick="refreshPersonalEngine()">Refresh Profile</button></div>
+  <div class="grid cols-4" id="personalStats"></div>
+  <div class="grid cols-4" id="profileStats"></div>
+  <div class="grid cols-2">
+    <div class="card"><div class="card-title">Recurring Execution Leaks</div><div id="leakList" class="stack"></div></div>
+    <div class="card"><div class="card-title">ICT Model Performance</div><div id="modelBreakdown" class="stack"></div></div>
+  </div>
+  <div class="grid cols-2">
+    <div class="card"><div class="card-title">Personal Pre-Trade Guardrails</div><div id="guardrails" class="stack"></div></div>
+    <div class="card"><div class="card-title">AI Coach — Personalized Brief</div><div id="personalBrief" class="coach-box"></div></div>
+  </div>
+  <div class="grid cols-2">
+    <div class="card"><div class="card-title">Execution Patterns</div><div id="executionPatterns" class="stack"></div></div>
+    <div class="card"><div class="card-title">Current Improvement Focus</div><div id="improvementFocus" class="coach-box"></div></div>
+  </div>
+  <div class="card"><div class="card-title">Trader Profile JSON</div><pre id="profileJson" class="jsonbox"></pre><button class="ghost" onclick="copyPersonalProfile()">Copy Profile JSON</button></div>
+</section>
+
+<section id="production" class="panel">
+  <div class="section-head"><div><span class="eyebrow">V17</span><h2>Production Core + Real Data Flow</h2><p>API-ready architecture for AI, economic data, auth and database services.</p></div></div>
+  <div class="grid two">
+    <div class="card"><h3>Service Adapters</h3><div class="stack">
+      <div class="row"><span>AI Vision / Coach</span><b class="pill">Adapter Ready</b></div>
+      <div class="row"><span>Economic Calendar</span><b class="pill">Provider Ready</b></div>
+      <div class="row"><span>Database</span><b class="pill">Schema Ready</b></div>
+      <div class="row"><span>Authentication</span><b class="pill">Boundary Ready</b></div>
+    </div></div>
+    <div class="card"><h3>Core Data Flow</h3><div class="flow"><span>Chart</span><i>→</i><span>Vision</span><i>→</i><span>ICT JSON</span><i>→</i><span>Coach</span><i>→</i><span>Journal</span></div><div class="flow"><span>Economic Event</span><i>→</i><span>News Context</span><i>→</i><span>Trade Review</span><i>→</i><span>Analytics</span></div></div>
+  </div>
+  <div class="card"><h3>Production Contracts</h3><pre class="codebox">POST /api/vision/analyze
+POST /api/coach/review
+GET  /api/economic-calendar?from=&amp;to=&amp;currency=
+POST /api/trades
+POST /api/trades/:id/ai-review
+GET  /api/analytics/performance
+GET  /api/personal-engine
+
+VisionResult → { bias, liquidity, sweep, structure, displacement, pdArray, entry, invalidation, target, model, confidence, evidence[], missing[] }
+CoachContext → { trade, vision, economicEvents, journalHistory, personalLeaks }</pre></div>
+  <div class="card"><h3>Database Entities</h3><div class="tags"><span>users</span><span>profiles</span><span>trades</span><span>trade_reviews</span><span>chart_analyses</span><span>economic_events</span><span>calendar_items</span><span>goals</span><span>reflections</span><span>backtests</span><span>ai_insights</span><span>execution_leaks</span></div></div>
+</section>
+</main>
+<script>
+const pages=["dashboard","trade","journal","analytics","coach","calendar","economic","reports"];
+const labels={dashboard:"Dashboard",trade:"Trade Planner",journal:"Trade Journal",analytics:"Analytics",coach:"AI Coach",calendar:"Calendar",economic:"Economic Calendar",reports:"Reports"};
+const subs={dashboard:[["dashboard","Overview"],["trade","Plan a Trade"]],trade:[["trade","Trade Planner"],["journal","Journal"],["backtest","Backtest Lab"],["goals","Goals"]],journal:[["journal","Trade Journal"],["calendar","Daily Context"]],analytics:[["analytics","Performance"],["personal","Personal Engine"]],coach:[["coach","AI Coach"],["reflection","Daily Reflection"],["personal","Personal Profile"]],calendar:[["calendar","Daily Context"],["economic","News Calendar"]],economic:[["economic","Economic Calendar"],["calendar","ICT Context"]],reports:[["reports","Performance Report"],["analytics","Analytics"]]};
+const parents={dashboard:"dashboard",trade:"trade",journal:"journal",backtest:"trade",goals:"trade",analytics:"analytics",personal:"analytics",coach:"coach",calendar:"calendar",economic:"economic",reports:"reports"};
+function renderSubnav(parent,active){const items=subs[parent]||subs.dashboard;document.getElementById("subnav").innerHTML=items.map(([id,label])=>`<button class="${id===active?'active':''}" onclick="go('${id}',this,true)">${label}</button>`).join("");}
+document.getElementById("nav").innerHTML=pages.map((p,i)=>`<button class="${i===0?'active':''}" data-page="${p}" onclick="go('${p}',this,false)">${labels[p]}</button>`).join("");
+renderSubnav("dashboard","dashboard");
+function go(id,btn,isSub){const target=document.getElementById(id);if(!target)return;document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));target.classList.add("active");document.querySelectorAll("#nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll("#subnav button").forEach(x=>x.classList.remove("active"));const parent=parents[id]||"dashboard";document.querySelector(`#nav button[data-page="${parent}"]`)?.classList.add("active");renderSubnav(parent,id);if(isSub)btn?.classList.add("active");refresh();}
+function val(id){return document.getElementById(id)?.value||""}
+function save(){localStorage.tm5=JSON.stringify(state)}
+function load(){try{return JSON.parse(localStorage.tm5)}catch(e){return {plans:[],backtests:[],economic:[]}}}
+let state=load();
+const steps=[["HTF Bias","bias"],["Liquidity","dol"],["Dealing Range","range"],["Premium/Discount","pd"],["Kill Zone","kz"],["ICT Model","model"],["Confirmation","checks"],["Entry","entry"],["Target","target"]];
+function checklistCount(){return [...document.querySelectorAll("#checks input")].filter(x=>x.checked).length}
+function renderSteps(){
+let done=0;document.getElementById("steps").innerHTML=steps.map(([n,k],i)=>{let d=k==="checks"?checklistCount()>=6:!!val(k);if(d)done++;return `<div class="step ${d?'done':''}"><div class="num">${i+1}</div><strong>${n}</strong></div>`}).join("");
+let pct=Math.round(done/steps.length*100);document.getElementById("progressPill").textContent=pct+"% complete";document.getElementById("progressBar").style.width=pct+"%";
+document.getElementById("score").textContent=Math.min(100,pct+checklistCount()*3)+"/100";
+}
+function renderDashboardJournalStats(list){
+ const rows=Array.isArray(list)?list:[];
+ const total=rows.length;
+ const wins=rows.filter(t=>String(t.outcome||t.result||'').toUpperCase()==='WIN').length;
+ const losses=rows.filter(t=>String(t.outcome||t.result||'').toUpperCase()==='LOSS').length;
+ const decided=wins+losses;
+ const rate=decided?Math.round(wins/decided*100):0;
+ const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+ set('dashTotalTrades',total); set('dashWinRate',rate+'%'); set('dashWins',wins); set('dashLosses',losses);
+ set('dashWinRateMeta',`${wins} wins / ${decided} decided`);
+}
+function syncDashboard(){document.getElementById("biasOut").textContent=val("bias")||"Not set";document.getElementById("dolOut").textContent=val("dol")||"Not set";document.getElementById("kzOut").textContent=val("kz")||"Not set";document.getElementById("modelOut").textContent=val("model")||"Not set";document.getElementById("bsl").textContent=val("dol")==="BSL"?"Primary":"Marked";document.getElementById("ssl").textContent=val("dol")==="SSL"?"Primary":"Marked";document.getElementById("pdhpdl").textContent=val("range")||"Set in planner";document.getElementById("asiah").textContent=val("range")?"Mapped":"Set in planner";let c=checklistCount();document.getElementById("aiPre").textContent=c<6?"AI flag: "+(6-c)+" confirmation item(s) still missing. Avoid treating an incomplete checklist as a completed setup.":"Checklist is sufficiently complete. Review invalidation and risk before execution."}
+function savePlan(){let p={date:new Date().toLocaleDateString(),model:val("model"),bias:val("bias"),kz:val("kz"),result:val("outcome")||"Planned",process:Math.min(100,Math.round((checklistCount()/8)*100))};state.plans.unshift(p);save();refresh();alert("Trade plan saved.");}
+function reviewAI(){let c=checklistCount(), issues=[];if(!val("bias"))issues.push("HTF bias missing");if(!val("dol"))issues.push("liquidity objective missing");if(!val("model"))issues.push("ICT model missing");if(c<6)issues.push("confirmation checklist incomplete");if(!val("sl"))issues.push("stop/invalidation missing");if(!val("target"))issues.push("target/DOL missing");document.getElementById("review").innerHTML=issues.length?`<b class="warn">Needs work before execution.</b><ul>${issues.map(x=>`<li>${x}</li>`).join("")}</ul>`:`<b class="good">Plan structure is complete.</b><p>Next: verify the setup on the chart, then log the actual execution and outcome.</p>`}
+function resetPlan(){document.querySelectorAll("#trade input,#trade textarea").forEach(x=>x.value="");document.querySelectorAll("#trade select").forEach(x=>x.selectedIndex=0);document.querySelectorAll("#checks input").forEach(x=>x.checked=false);document.getElementById("review").textContent="No review yet.";refresh()}
+function renderJournal(){document.getElementById("journalRows").innerHTML=state.plans.length?state.plans.slice(0,20).map(p=>`<tr><td>${p.date}</td><td>${p.model||"—"}</td><td>${p.bias||"—"}</td><td>${p.kz||"—"}</td><td>${p.result}</td><td>${p.process}%</td></tr>`).join(""):`<tr><td colspan="6" class="muted">No trades yet.</td></tr>`; renderDashboardJournalStats(state.plans)}
+function renderAnalytics(){let n=state.plans.length,avg=n?Math.round(state.plans.reduce((a,b)=>a+b.process,0)/n):0;document.getElementById("analyticsCards").innerHTML=[["Plans",n],["Avg Process",avg+"%"],["Models",new Set(state.plans.map(x=>x.model).filter(Boolean)).size],["Backtest Samples",state.backtests.reduce((a,b)=>a+Number(b.n),0)]].map(x=>`<div class="card metric"><small>${x[0]}</small><div class="big">${x[1]}</div></div>`).join("");let map={};state.plans.forEach(p=>map[p.model]=(map[p.model]||0)+1);document.getElementById("modelStats").innerHTML=Object.keys(map).length?Object.entries(map).map(([k,v])=>`<p>${k}<span class="pill" style="float:right">${v} plan(s)</span></p>`).join(""):"<span class='muted'>Log trades to build model statistics.</span>";document.getElementById("leaks").innerHTML=["Missing HTF context","Late confirmation","Risk not defined","Model switching"].map((x,i)=>`<p>${x}<span class="pill" style="float:right">${n?Math.max(0,n-i):0}</span></p>`).join("")}
+
+
+function previewChart(e){
+ const f=e.target.files&&e.target.files[0]; if(!f)return;
+ const url=URL.createObjectURL(f);
+ document.getElementById("chartPreview").innerHTML=`<img src="${url}" style="width:100%;max-height:430px;object-fit:contain;border:1px solid var(--line);border-radius:10px" alt="Chart preview">`;
+}
+function buildICTAnalysis(done,total){
+ const checks=[...document.querySelectorAll("#visionChecks input")];
+ const get=(i)=>checks[i]?.checked||false;
+ const analysis={schema:"trademind.ict.v8",timestamp:new Date().toISOString(),source:{type:"chart_upload",visionAdapter:"mock-browser-checklist"},bias:document.querySelector('[name="bias"]')?.value||"Not specified",liquidity:{BSL_SSL_sweep:get(0),status:get(1)?"confirmed":"unconfirmed"},structure:{MSS_CHOCH_BOS:get(2),displacement:get(3)},pdArray:{FVG_or_PDArray:get(4)},execution:{entryLocation:get(5),targetLiquidityBased:get(6),invalidationClear:get(7)},confluence:Math.round(done/Math.max(total,1)*100),missingConfirmations:checks.filter(x=>!x.checked).map(x=>x.parentElement?.innerText||"Unknown"),model:document.querySelector('[name="model"]')?.value||"ICT setup",humanVerificationRequired:true};
+ return analysis;
+}
+function renderICTJSON(a){document.getElementById('ictJson').textContent=JSON.stringify(a,null,2);document.getElementById('v8JsonStatus').textContent='Generated';document.getElementById('v8CoachStatus').textContent='Ready';}
+function copyICTJSON(){navigator.clipboard?.writeText(document.getElementById('ictJson').textContent);}
+function saveVisionToJournal(){const raw=document.getElementById('ictJson').textContent;if(raw.startsWith('Run Vision'))return alert('Run Vision Review first.');const a=JSON.parse(raw);state.journal=state.journal||[];state.journal.unshift({id:Date.now(),date:new Date().toISOString().slice(0,10),setup:a.model,bias:a.bias,notes:'V8 structured ICT analysis',analysis:a});save();document.getElementById('v8JournalStatus').textContent='Saved';alert('ICT analysis saved to Journal.');}
+function runVisionReview(){
+ const boxes=[...document.querySelectorAll("#visionChecks input")], done=boxes.filter(x=>x.checked).length;
+ const pct=Math.round(done/boxes.length*100), missing=boxes.length-done;
+ document.getElementById("visionScore").textContent=pct+"/100";
+ const ict=buildICTAnalysis(done,boxes.length); renderICTJSON(ict);
+ document.getElementById("confluence").textContent=done>=7?"High":done>=5?"Medium":"Low";
+ document.getElementById("missingVision").textContent=missing;
+ let status=done>=7?"Structured setup":done>=5?"Needs confirmation":"Incomplete";
+ document.getElementById("setupStatus").textContent=status;
+ const model=val("model")||"ICT setup";
+ document.getElementById("detectedSetup").innerHTML=`<b>${model}</b><p class="muted">Prototype classification is based on the structured checklist, not autonomous market prediction.</p>`;
+ if(done>=7){
+   document.getElementById("visionReview").innerHTML="<b class='good'>Strong visual checklist coverage.</b><p>Liquidity, structure, PD array, entry, target and invalidation are sufficiently represented. Compare the chart with your original thesis before execution.</p>";
+   document.getElementById("visionAction").innerHTML="<b class='good'>Ready for human verification.</b><p>Verify the chart manually, then save the plan and journal the actual result.</p>";
+ }else{
+   document.getElementById("visionReview").innerHTML=`<b class='warn'>Visual review incomplete.</b><p>${missing} checklist item(s) are still missing. Do not treat this prototype score as a trading signal.</p>`;
+   document.getElementById("visionAction").innerHTML="<b class='warn'>Complete missing confirmations.</b><p>Focus on liquidity event, market structure, PD array, entry location and invalidation.</p>";
+ }
+}
+function calculateGrade(){
+  const c=checklistCount(), fields=["bias","dol","range","pd","kz","model","entry","sl","target"];
+  const filled=fields.filter(x=>val(x)).length;
+  const score=Math.round((filled/fields.length)*55 + (c/8)*45);
+  let grade=score>=90?"A":score>=80?"B":score>=70?"C":score>=60?"D":"F";
+  document.getElementById("gradeOut").textContent=grade+" ("+score+")";
+  document.getElementById("adhOut").textContent=val("model")?(c>=6?"Strong":"Needs work"):"—";
+  document.getElementById("riskOut").textContent=(val("sl")&&val("risk")&&val("invalid"))?"Defined":"Missing";
+  const leaks=[];
+  if(!val("bias")) leaks.push("No HTF bias");
+  if(!val("dol")) leaks.push("No liquidity objective");
+  if(!val("kz")) leaks.push("Timing not defined");
+  if(!val("model")) leaks.push("Model not selected");
+  if(c<6) leaks.push("Confirmation incomplete");
+  if(!val("sl")||!val("invalid")) leaks.push("Risk/invalidation missing");
+  document.getElementById("leakOut").textContent=leaks[0]||"None";
+  document.getElementById("gradeDetail").innerHTML=`<b>Grade ${grade}</b><p>Process score: ${score}/100.</p><p>${leaks.length?("Before execution, address: "+leaks.join(", ")+"."):"Core planning fields are complete. Validate the chart and journal the actual execution."}</p>`;
+  document.getElementById("detectedLeaks").innerHTML=leaks.length?leaks.map((x,i)=>`<div class="metric" style="margin:7px 0"><b>${i+1}. ${x}</b><div class="muted">Treat this as a process item to review across future trades.</div></div>`).join(""):"<span class='good'>No obvious checklist leak in the current plan.</span>";
+}
+function reviewChart(){
+ const n=val("chartNotes").toLowerCase(), move=val("postMove"), flags=[];
+ if(n && !/sweep|liquidity/.test(n)) flags.push("Liquidity event is not mentioned.");
+ if(n && !/mss|choch|bos/.test(n)) flags.push("Market-structure confirmation is not mentioned.");
+ if(n && !/fvg|order block|breaker|ifvg|bpr|ote/.test(n)) flags.push("No PD array is mentioned.");
+ if(move==="Invalidated thesis") flags.push("Post-entry action: compare the invalidation with the original thesis.");
+ if(move==="Stopped before target") flags.push("Review whether entry timing and confirmation were premature.");
+ document.getElementById("chartReview").innerHTML=flags.length?`<b class="warn">Review points</b><ul>${flags.map(x=>`<li>${x}</li>`).join("")}</ul>`:"<b class='good'>Chart notes contain the main ICT review elements.</b><p>Next: compare the screenshot with your original liquidity and entry thesis.</p>";
+}
+
+function renderCoach(){calculateGrade();let n=state.plans.length;document.getElementById("coachText").innerHTML=n?`<p>You have <b>${n}</b> structured plan(s).</p><p>Focus your next review on <b>process consistency</b>: compare model, liquidity thesis, confirmation and risk decisions before looking at P&L.</p>`:`<p>Start by creating a trade plan. The coach will turn your journal into process feedback as data accumulates.`}
+async function addBacktest(){const payload={model:val("btModel"),sample_size:Number(val("btN")),wins:Number(val("btWins")),losses:Number(val("btLosses")),breakeven:Number(val("btBE")),total_r:Number(val("btTotalR")||0),notes:val("btNotes")};if(V17.userId){try{await api('/api/backtests',{method:'POST',body:JSON.stringify(payload)});document.getElementById('btStatus').textContent='Saved to PostgreSQL';await loadBacktests();return}catch(e){document.getElementById('btStatus').textContent='Database save failed'}}state.backtests.unshift({model:payload.model,n:payload.sample_size,wr:(payload.wins+payload.losses)?Math.round(payload.wins/(payload.wins+payload.losses)*100):0,date:new Date().toLocaleDateString(),wins:payload.wins,losses:payload.losses,be:payload.breakeven,total_r:payload.total_r});save();renderBT()}
+async function loadBacktests(){if(!V17.userId){renderBT();return}try{const r=await api('/api/backtests');state.backtests=(r.data||[]).map(x=>({model:x.model,n:x.sample_size,wins:x.wins,losses:x.losses,be:x.breakeven,wr:Number(x.win_rate||0),total_r:Number(x.total_r||0),date:new Date(x.tested_at||x.created_at).toLocaleDateString()}));renderBT()}catch(e){renderBT()}}
+function renderBT(){document.getElementById("btRows").innerHTML=state.backtests.map(x=>`<tr><td>${x.model}</td><td>${x.n}</td><td>${x.wins??'—'} / ${x.losses??'—'} / ${x.be??'—'}</td><td>${Number(x.wr||0).toFixed(1)}%</td><td>${x.total_r!=null?Number(x.total_r).toFixed(2)+'R':'—'}</td><td>${x.date}</td></tr>`).join("")||"<tr><td colspan=6 class=muted>No backtest samples yet.</td></tr>"}
+async function loadGoals(){if(!V17.userId){renderGoals(state.goals||[]);return}try{const r=await api('/api/goals');state.goals=r.data||[];renderGoals(state.goals)}catch(e){renderGoals(state.goals||[])}}
+function renderGoals(rows){rows=rows||[];const active=rows.filter(x=>x.status==='ACTIVE').length,done=rows.filter(x=>x.status==='COMPLETED').length;const progress=rows.length?Math.round(rows.reduce((a,x)=>a+(Number(x.target_value)>0?Math.min(1,Number(x.current_value||0)/Number(x.target_value)):0),0)/rows.length*100):0;document.getElementById('goalStats').innerHTML=[['Active',active,'goals'],['Completed',done,'goals'],['Tracked',rows.length,'total'],['Progress',progress+'%','average target progress']].map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');document.getElementById('goalList').innerHTML=rows.length?rows.map(x=>{const pct=Number(x.target_value)>0?Math.min(100,Math.round(Number(x.current_value||0)/Number(x.target_value)*100)):0;return `<div class="metric info"><div class="row"><b>${x.title}</b><span class="pill">${x.status}</span></div><span>${x.goal_type} · ${x.current_value||0}${x.target_value!=null?' / '+x.target_value:''} ${x.unit||''}${x.deadline?' · due '+new Date(x.deadline).toLocaleDateString():''}</span><div class="bar"><i style="width:${pct}%"></i></div><div class="row" style="margin-top:8px"><small>${pct}% tracked</small>${x.status==='ACTIVE'&&x.target_value!=null?`<button class="btn" onclick="completeGoal('${x.id}')">Complete</button>`:''}</div></div>`}).join(''):'<div class="metric"><span>No goals yet. Start with a process goal tied to your journal.</span></div>'}
+async function saveGoal(){const payload={title:val('goalTitle'),goal_type:val('goalType'),target_value:Number(val('goalTarget')||0),current_value:Number(val('goalCurrent')||0),unit:val('goalUnit'),deadline:val('goalDeadline')||null,notes:val('goalNotes')};if(!payload.title){document.getElementById('goalStatus').textContent='Add a goal';return}if(V17.userId){try{await api('/api/goals',{method:'POST',body:JSON.stringify(payload)});document.getElementById('goalStatus').textContent='Saved to PostgreSQL';await loadGoals();return}catch(e){}}state.goals=state.goals||[];state.goals.unshift({...payload,id:Date.now().toString(),status:'ACTIVE'});save();renderGoals(state.goals);document.getElementById('goalStatus').textContent='Saved locally'}
+async function completeGoal(id){if(V17.userId){try{await api('/api/goals/'+id,{method:'PATCH',body:JSON.stringify({status:'COMPLETED'})});await loadGoals();return}catch(e){}}const g=(state.goals||[]).find(x=>x.id===id);if(g){g.status='COMPLETED';save();renderGoals(state.goals)}}
+function addEconomicEvent(){
+const e={date:val("econDate")||new Date().toISOString().slice(0,10),time:val("econTime")||"--:--",impact:val("econImpact"),currency:val("econCurrency"),event:val("econEvent")||"Unnamed event",session:val("econSession")};
+state.economic=state.economic||[];state.economic.unshift(e);save();renderEconomic();document.getElementById("econEvent").value="";alert("Economic event saved.");}
+function renderEconomic(){
+state.economic=state.economic||[];document.getElementById("econRows").innerHTML=state.economic.length?state.economic.slice(0,30).map(e=>{let ict=e.impact==="High"?"News risk near execution":"Context only";return `<tr><td>${e.date}</td><td>${e.time}</td><td><span class="pill">${e.impact}</span></td><td>${e.currency}</td><td>${e.event}</td><td>${e.session}</td><td>${ict}</td></tr>`}).join(""): `<tr><td colspan="7" class="muted">No economic events logged yet.</td></tr>`;
+const today=new Date().toISOString().slice(0,10);const high=state.economic.filter(e=>e.date===today&&e.impact==="High");document.getElementById("econGuardrail").innerHTML=high.length?`<b class="warn">${high.length} high-impact event(s) logged today.</b><p>Before an ICT setup, check timing, volatility and invalidation. Do not treat news proximity as a signal.</p>`:`<b class="good">No high-impact event logged for today.</b><p>Continue with the normal ICT execution checklist and verify your own market data.</p>`;
+}
+async function loadReflection(){
+ if(!V17.userId){return;}
+ try{const r=await api('/api/reflections');const d=r.data||{};const latest=d.latest;const rows=d.history||[];
+  if(latest){['happened','learned','good','avoid','next'].forEach(k=>{const el=document.getElementById('reflection'+k[0].toUpperCase()+k.slice(1));if(el)el.value=latest[k]||''})}
+  const stats=[['Reflection Days',rows.length,'saved sessions'],['Latest Trades',d.latest_trade_count||0,'journal context'],['Current Focus',d.focus||'—','profile signal'],['Consistency',rows.length?Math.min(100,Math.round(rows.length/20*100))+'%':'0%','20-day target']];document.getElementById('reflectionStats').innerHTML=stats.map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+  document.getElementById('reflectionHistory').innerHTML=rows.length?rows.map(x=>`<div class="metric info"><b>${new Date(x.reflection_date).toLocaleDateString()}</b><span>${(x.learned||x.happened||'No lesson recorded.').slice(0,180)}</span></div>`).join(''):'<div class="metric"><span>No reflection history yet.</span></div>';
+  if(latest?.ai_insight)document.getElementById('reflectionCoach').innerHTML=latest.ai_insight;
+ }catch(e){const el=document.getElementById('reflectionStatus');if(el)el.textContent='Unable to load'}
+}
+async function saveReflection(){
+ if(!V17.userId){openAuth(true);return;}
+ const body={reflection_date:new Date().toISOString().slice(0,10),happened:val('reflectionHappened'),learned:val('reflectionLearned'),good:val('reflectionGood'),avoid:val('reflectionAvoid'),next:val('reflectionNext')};
+ try{await api('/api/reflections',{method:'POST',body:JSON.stringify(body)});document.getElementById('reflectionStatus').textContent='Saved';await loadReflection();}catch(e){document.getElementById('reflectionStatus').textContent='Save failed'}
+}
+async function generateReflectionInsight(){
+ if(!V17.userId){openAuth(true);return;}
+ try{const r=await api('/api/reflections/insight',{method:'POST'});document.getElementById('reflectionCoach').innerHTML=r.data?.insight||'No insight generated.';await loadReflection();}catch(e){document.getElementById('reflectionCoach').innerHTML='AI feedback is unavailable until the AI provider is configured.'}
+}
+async function loadWeeklyCoach(){
+ if(!V17.userId)return;
+ try{const days=Number(document.getElementById('weeklyRange')?.value||7);const r=await api('/api/coach/weekly?days='+days);const d=r.data,s=d.summary;document.getElementById('weeklyStatus').textContent=`Live PostgreSQL · ${s.trades} closed trades`;document.getElementById('weeklyStats').innerHTML=[['Trades',s.trades,'closed'],['Win Rate',s.win_rate+'%','wins ÷ decided'],['Total R',fmtR(s.total_r),'realized'],['Reflections',s.reflection_days,'days recorded']].map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');document.getElementById('weeklyLeaks').innerHTML=d.top_leaks.length?d.top_leaks.map(x=>`<div class="metric info"><b>${x.label}</b><span>${x.count} occurrence${x.count===1?'':'s'} in period</span></div>`).join(''):'<div class="metric"><span>No recurring leak detected in this period.</span></div>';document.getElementById('weeklyFocus').innerHTML=`<b>${d.focus}</b><p>Use this as the next process checkpoint. Review the underlying trades before changing your rules.</p>`;document.getElementById('weeklyModels').innerHTML=d.model_usage.length?d.model_usage.map(x=>`<div class="metric"><b>${x.label}</b><span>${x.count} trade${x.count===1?'':'s'}</span></div>`).join(''):'<div class="metric"><span>No closed ICT-model trades yet.</span></div>';document.getElementById('weeklyReflection').innerHTML=d.reflections.length?d.reflections.map(x=>`<div class="metric info"><b>${new Date(x.reflection_date).toLocaleDateString()}</b><span>${(x.learned||x.next||x.happened||'Reflection saved.').slice(0,150)}</span></div>`).join(''):'<div class="metric"><span>No reflections in this period.</span></div>';}catch(e){document.getElementById('weeklyStatus').textContent='Weekly review unavailable'}}
+function refresh(){renderEconomic();renderSteps();syncDashboard();renderJournal();renderAnalytics();renderCoach();renderBT();loadGoals();loadBacktests();calculateGrade();if(document.getElementById("reflection")?.classList.contains("active"))loadReflection();if(document.getElementById("reports")?.classList.contains("active"))loadReports()}
+document.querySelectorAll("#trade input,#trade select,#trade textarea").forEach(x=>x.addEventListener("input",refresh));document.querySelectorAll("#checks input").forEach(x=>x.addEventListener("change",refresh));refresh();
+</script>
+
+<script>
+const PM={
+  get trades(){ try{return JSON.parse(localStorage.getItem('trademind_trades')||'[]')}catch(e){return []} },
+  models:['ICT 2022 Model','Silver Bullet','OTE','MMXM','Power of 3','CRT','TGIF','Judas Swing']
+};
+function personalData(){
+ const t=PM.trades;
+ const n=t.length;
+ const outcomes=t.map(x=>(x.outcome||'Planned').toLowerCase());
+ const wins=outcomes.filter(x=>x==='win').length, losses=outcomes.filter(x=>x==='loss').length;
+ const known=outcomes.filter(x=>x==='win'||x==='loss').length;
+ const adherence=t.filter(x=>x.htfBias&&x.drawOnLiquidity&&x.confirmation).length;
+ const riskIssues=t.filter(x=>Number(x.risk||0)>2).length;
+ const missing=t.filter(x=>!(x.stop||x.invalidation)||!(x.target||x.drawOnLiquidity)).length;
+ const model={}; PM.models.forEach(m=>model[m]={n:0,w:0});
+ t.forEach(x=>{const m=x.ictModel||x.model;if(model[m]){model[m].n++;if((x.outcome||'').toLowerCase()==='win')model[m].w++}});
+ const leaks=[];
+ if(n && riskIssues/n>.2) leaks.push(['Risk oversizing',`Risk > 2% appears in ${riskIssues}/${n} journaled trades.`,riskIssues/n]);
+ if(n && missing/n>.25) leaks.push(['Incomplete plan',`${missing}/${n} trades lack a clear stop/invalidation or liquidity-based target.`,missing/n]);
+ const noBias=t.filter(x=>!x.htfBias).length;
+ if(n && noBias/n>.2) leaks.push(['HTF bias inconsistency',`${noBias}/${n} trades were logged without a clear HTF bias.`,noBias/n]);
+ const noSweep=t.filter(x=>!(x.liquiditySweep||x.sweep)).length;
+ if(n && noSweep/n>.35) leaks.push(['Liquidity confirmation gap',`${noSweep}/${n} trades do not record a liquidity sweep.`,noSweep/n]);
+ const noMss=t.filter(x=>!(x.mss||x.structure)).length;
+ if(n && noMss/n>.35) leaks.push(['Structure confirmation gap',`${noMss}/${n} trades do not record MSS/CHOCH/BOS confirmation.`,noMss/n]);
+ return {n,wins,losses,known,winRate:known?Math.round(wins/known*100):0,adherence:n?Math.round(adherence/n*100):0,leaks,model,generatedAt:new Date().toISOString()};
+}
+async function refreshPersonalEngine(){
+ let d=personalData();
+ if(V17.userId){
+   try{ const r=await api('/api/personal-profile'); if(r&&r.data) d=Object.assign({},d,r.data); }catch(e){}
+ }
+ const stats=[['Journal Trades',d.n,'history'],['Win Rate',d.winRate+'%','known outcomes'],['Process Adherence',d.adherence+'%','planning completeness'],['Recurring Leaks',d.leaks.length,'patterns detected']];
+ document.getElementById('personalStats').innerHTML=stats.map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+ const ps=[['Avg Risk',d.avgRisk!=null?d.avgRisk+'%':'—','journal'],['Top Kill Zone',d.topKillZone||'—','frequency'],['Primary Direction',d.topDirection||'—','frequency'],['HTF Bias Logged',d.biasCoverage!=null?d.biasCoverage+'%':'—','coverage']]; document.getElementById('profileStats').innerHTML=ps.map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+ document.getElementById('leakList').innerHTML=d.leaks.length?d.leaks.map(x=>`<div class="metric warn"><b style="font-size:15px">${x[0]}</b><span>${x[1]}</span><div class="bar"><i style="width:${Math.round(x[2]*100)}%"></i></div></div>`).join(''):`<div class="metric good"><b style="font-size:15px">No recurring leak threshold crossed</b><span>Keep journaling consistently so the engine has enough evidence.</span></div>`;
+ document.getElementById('modelBreakdown').innerHTML=Object.entries(d.model).filter(([,v])=>v.n).map(([m,v])=>`<div class="metric info"><b style="font-size:15px">${m}</b><span>${v.w}/${v.n} wins · ${Math.round(v.w/v.n*100)}% outcome win rate</span><div class="bar"><i style="width:${Math.round(v.w/v.n*100)}%"></i></div></div>`).join('')||'<div class="metric"><span>No model-tagged trades yet.</span></div>';
+ const guards=[];
+ if(d.leaks.some(x=>x[0]==='Risk oversizing')) guards.push('Before entry: verify fixed risk and invalidation before thinking about reward.');
+ if(d.leaks.some(x=>x[0]==='HTF bias inconsistency')) guards.push('Write HTF bias + draw on liquidity before selecting an execution model.');
+ if(d.leaks.some(x=>x[0]==='Liquidity confirmation gap')) guards.push('Do not mark a setup complete until the liquidity event is explicitly logged.');
+ if(d.leaks.some(x=>x[0]==='Structure confirmation gap')) guards.push('Require MSS/CHOCH/BOS evidence in the journal before execution.');
+ if(!guards.length) guards.push('Maintain the full ICT chain: bias → liquidity → timing → sweep → structure → displacement → PD array → risk → target.');
+ document.getElementById('guardrails').innerHTML=guards.map(g=>`<div class="metric warn">${g}</div>`).join('');
+ const brief=d.n?`Your journal currently contains <b>${d.n}</b> trades. The engine found <b>${d.leaks.length}</b> recurring pattern${d.leaks.length===1?'':'s'}. Your next improvement target should be the highest-frequency process gap, not simply the latest win or loss.`:'Start by logging 10–20 trades with consistent ICT fields. The Personal Engine will then detect recurring execution patterns.';
+ document.getElementById('personalBrief').innerHTML=brief;
+ const patterns=[]; if(d.topKillZone) patterns.push(`<b>Kill Zone:</b> ${d.topKillZone}`); if(d.topDirection) patterns.push(`<b>Direction:</b> ${d.topDirection}`); if(d.topLiquidity) patterns.push(`<b>Liquidity:</b> ${d.topLiquidity}`); if(d.topStructure) patterns.push(`<b>Structure:</b> ${d.topStructure}`); document.getElementById('executionPatterns').innerHTML=patterns.length?patterns.map(x=>`<div class="metric info">${x}</div>`).join(''):'<div class="metric">Log more structured ICT fields to reveal recurring execution patterns.</div>';
+ const focus=d.leaks&&d.leaks.length?d.leaks[0][0]:'Maintain consistent ICT process and journal every execution field.'; document.getElementById('improvementFocus').innerHTML=`<b>${focus}</b><p class="muted">Use the next trades to test whether this pattern changes. The profile describes journal evidence; it is not a trade signal.</p>`;
+ const profile={engine:'TradeMind AI V9',methodology:'ICT',sampleSize:d.n,winRate:d.winRate,processAdherence:d.adherence,recurringLeaks:d.leaks.map(x=>({name:x[0],evidence:x[1],frequency:x[2]})),modelPerformance:d.model,generatedAt:d.generatedAt};
+ document.getElementById('profileJson').textContent=JSON.stringify(profile,null,2);
+ localStorage.setItem('trademind_personal_profile',JSON.stringify(profile));
+}
+
+async function loadReports(){if(!V17.userId)return;try{const days=Number(val('reportRange')||30);const r=await api('/api/reports/summary?days='+days),d=r.data,s=d.summary;document.getElementById('reportCards').innerHTML=[['Trades',s.trades],['Win Rate',s.win_rate+'%'],['Total R',fmtR(s.total_r)],['Total P/L',Number(s.total_pnl).toFixed(2)],['Average R',fmtR(s.avg_r)],['Breakeven',s.breakeven],['Wins',s.wins],['Losses',s.losses]].map(x=>perfMetric(x[0],x[1],days+'D report')).join('');const list=(id,rows)=>document.getElementById(id).innerHTML=rows.length?rows.map(x=>`<div class="metric info"><b>${x.label}</b><span>${x.trades} trades</span></div>`).join(''):'<span class="muted">No data in period.</span>';list('reportModels',d.models);list('reportKillzones',d.kill_zones);document.getElementById('reportReflections').innerHTML=d.reflections.length?d.reflections.map(x=>`<div class="metric info"><b>${new Date(x.reflection_date).toLocaleDateString()}</b><span>${(x.learned||x.next||x.good||'Reflection saved.').slice(0,220)}</span></div>`).join(''):'<span class="muted">No reflections in period.</span>';const c=await api('/api/economic-calendar/correlation?days='+days);const by=c.data.by_impact;document.getElementById('correlationStatus').textContent='Live PostgreSQL';document.getElementById('correlationCards').innerHTML=['HIGH','MEDIUM','LOW'].map(k=>perfMetric(k,by[k].trades+' trades',by[k].events+' nearby event matches · Avg '+fmtR(by[k].avg_r))).join('');document.getElementById('correlationRows').innerHTML=c.data.near_event_trades.slice(0,12).map(x=>`<div class="metric info"><div class="row"><b>${x.title}</b><span class="pill">${x.impact}</span></div><span>${new Date(x.opened_at).toLocaleString()} · ${x.minutes_away} min away · ${x.outcome} · ${fmtR(x.realized_r)}</span></div>`).join('')||'<span class="muted">No stored economic events near closed trades.</span>';}catch(e){const x=document.getElementById('correlationStatus');if(x)x.textContent='Report unavailable'}}
+
+function copyPersonalProfile(){navigator.clipboard?.writeText(document.getElementById('profileJson').textContent)}
+function renderDemoEquityPreview(){
+ const demo=[
+  {date:'2026-09-01',cumulative_r:0.8},{date:'2026-09-03',cumulative_r:-0.2},{date:'2026-09-05',cumulative_r:1.1},{date:'2026-09-09',cumulative_r:0.6},{date:'2026-09-12',cumulative_r:2.0},{date:'2026-09-16',cumulative_r:1.4},{date:'2026-09-20',cumulative_r:2.7},{date:'2026-09-24',cumulative_r:2.3}
+ ];
+ const status=document.getElementById('performanceDataStatus'),desc=document.getElementById('equityCurveDescription'),note=document.getElementById('equityDemoNote');
+ if(!V17?.userId){renderEquityChart(demo);if(status)status.textContent='Demo Preview · illustrative';if(desc)desc.textContent='Demo mode: illustrative cumulative R preview. Production data is kept separate.';if(note)note.style.display='block';}
+}
+window.addEventListener('load',()=>setTimeout(renderDemoEquityPreview,180));
+window.addEventListener('load',()=>setTimeout(refreshPersonalEngine,100));
+window.addEventListener('load',()=>setTimeout(loadReports,250));
+</script>
+
+<script id="v26-performance">
+function fmtR(v){return `${Number(v||0).toFixed(2)}R`}
+function perfMetric(label,value,meta=''){return `<div class="card metric"><small>${label}</small><div class="big">${value}</div><span>${meta}</span></div>`}
+function renderBreakdown(elId,rows){const el=document.getElementById(elId);if(!el)return;el.innerHTML=rows?.length?rows.map(x=>`<div class="metric info" style="margin-bottom:8px"><div class="row"><b>${x.label}</b><span class="pill">${x.trades} trades</span></div><div class="muted" style="margin-top:5px">${x.win_rate}% win · ${fmtR(x.total_r)} · Avg ${fmtR(x.avg_r)}</div><div class="bar" style="margin-top:8px"><i style="width:${Math.min(100,Math.max(0,x.win_rate))}%"></i></div></div>`).join(''):'<span class="muted">No closed trades in this period.</span>'}
+function renderEquityChart(points){const el=document.getElementById('equityChart');if(!el)return;if(!points?.length){el.innerHTML='<div class="muted" style="padding:50px;text-align:center">No production equity data yet. Add and close Journal trades with realized R to build the curve.</div>';return}const w=1100,h=280,pad=34;const vals=[0,...points.map(x=>Number(x.cumulative_r)||0)];const min=Math.min(...vals),max=Math.max(...vals),range=max-min||1;const x=i=>pad+(i/(Math.max(1,points.length)))*(w-pad*2);const y=v=>h-pad-((v-min)/range)*(h-pad*2);const line=vals.map((v,i)=>`${i===0?'M':'L'} ${x(i)} ${y(v)}`).join(' ');const area=`M ${x(0)} ${y(vals[0])} ${vals.map((v,i)=>`L ${x(i)} ${y(v)}`).join(' ')} L ${x(vals.length-1)} ${h-pad} L ${x(0)} ${h-pad} Z`;const zeroY=y(0);const labels=points.length>1?points.filter((_,i)=>i===0||i===points.length-1||i===Math.floor(points.length/2)).map((q,i)=>`<text x="${x([0,Math.floor(points.length/2),points.length-1][i]+1)}" y="${h-8}" fill="#9b967f" font-size="11" text-anchor="middle">${new Date(q.date).toLocaleDateString()}</text>`).join(''):'';el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="100%" height="280" role="img" aria-label="Equity curve"><defs><linearGradient id="eqFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffd21a" stop-opacity=".24"/><stop offset="1" stop-color="#ffd21a" stop-opacity="0"/></linearGradient></defs><line x1="${pad}" x2="${w-pad}" y1="${zeroY}" y2="${zeroY}" stroke="#332d0b" stroke-dasharray="5 5"/><path d="${area}" fill="url(#eqFill)"/><path d="${line}" fill="none" stroke="#ffd21a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${vals.slice(1).map((v,i)=>`<circle cx="${x(i+1)}" cy="${y(v)}" r="3" fill="#050505" stroke="#ffd21a" stroke-width="2"><title>${new Date(points[i].date).toLocaleString()} · ${fmtR(v)}</title></circle>`).join('')}<text x="${pad}" y="18" fill="#9b967f" font-size="11">Max ${max.toFixed(2)}R</text><text x="${pad}" y="${h-28}" fill="#9b967f" font-size="11">Min ${min.toFixed(2)}R</text>${labels}</svg>`}
+async function loadPerformanceAnalytics(){if(!V17.userId)return;try{const days=Number(document.getElementById('performanceRange')?.value||0);const r=await api('/api/analytics/performance'+(days?`?days=${days}`:''));const d=r.data,s=d.summary;document.getElementById('performanceDataStatus').textContent=`Live PostgreSQL · ${s.trades} closed trades`;document.getElementById('performanceCards').innerHTML=[perfMetric('Total P/L',Number(s.total_pnl).toFixed(2),'recorded realized P/L'),perfMetric('Total R',fmtR(s.total_r),'cumulative realized R'),perfMetric('Average R',fmtR(s.avg_r),'per closed trade'),perfMetric('Expectancy',fmtR(s.expectancy),'average realized R'),perfMetric('Profit Factor',s.profit_factor==null?'—':s.profit_factor.toFixed(2),'gross wins ÷ gross losses'),perfMetric('Max Drawdown',fmtR(s.max_drawdown_r),'peak-to-trough R'),perfMetric('Average Win',fmtR(s.avg_win),'winning trades'),perfMetric('Average Loss',fmtR(s.avg_loss),'losing trades')].join('');renderEquityChart(d.equity);renderBreakdown('modelPerformance',d.breakdowns.models);renderBreakdown('killZonePerformance',d.breakdowns.kill_zones);renderBreakdown('directionPerformance',d.breakdowns.directions)}catch(e){const el=document.getElementById('performanceDataStatus');if(el)el.textContent='Performance data unavailable'}}
+</script>
+<script id="v17-real-data-flow">
+const V17={userId:null,remote:[],ready:false};
+async function api(path,options={}){const token=localStorage.getItem('trademind_access_token');const r=await fetch(path,{headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{}),...(options.headers||{})},...options});if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||`API ${r.status}`);return r.json()}
+async function bootstrapRealData(){
+  try{
+    const me=await api('/api/auth/me');
+    V17.userId=me.user.id; V17.ready=true; localStorage.setItem('trademind_user_id',me.user.id);
+    setAuthUI(me.user); await syncFromDatabase(); setApiStatus('Secure database connected');
+  }catch(e){ V17.ready=false; setApiStatus('Sign in to enable secure sync'); setAuthUI(null); openAuth(false); }
+}
+async function syncFromDatabase(){if(!V17.userId)return;const r=await api('/api/trades?user_id='+encodeURIComponent(V17.userId));V17.remote=r.data||[];renderRemoteJournal();await renderRemoteAnalytics()}
+function setApiStatus(msg){const el=document.getElementById('v17Status');if(el)el.textContent=msg}
+function renderRemoteJournal(){const rows=document.getElementById('journalRows');if(!rows||!V17.remote.length)return;rows.innerHTML=V17.remote.slice(0,30).map(t=>`<tr><td>${new Date(t.created_at).toLocaleDateString()}</td><td>${t.ict_model||'—'}</td><td>${t.htf_bias||'—'}</td><td>${t.kill_zone||'—'}</td><td>${t.outcome}</td><td>${t.risk_pct!=null?t.risk_pct+'%':'—'}</td></tr>`).join('')}
+async function renderRemoteAnalytics(){if(!V17.userId)return;try{const r=await api('/api/analytics'),d=r.data;if(!d)return;const s=d.summary;const cards=document.getElementById('analyticsCards');if(cards)cards.innerHTML=[['DB Trades',s.trades],['Win Rate',s.win_rate+'%'],['DB Wins',s.wins],['DB Losses',s.losses]].map(x=>`<div class="card metric"><small>${x[0]}</small><div class="big">${x[1]}</div></div>`).join(''); renderDashboardJournalStats(V17.remote); await loadPerformanceAnalytics(); const source=document.getElementById('dashboardDataSource'); if(source)source.textContent='Live PostgreSQL journal data';}catch(e){}}
+async function savePlanToDatabase(){
+ if(!V17.userId)return false;
+ const payload={user_id:V17.userId,symbol:'ICT-SETUP',direction:(document.querySelector('#trade select[id="direction"]')?.value||'LONG'),entry:Number(val('entry'))||null,stop:Number(val('sl'))||null,target:Number(val('target'))||null,outcome:(val('outcome')||'Planned').toUpperCase(),ict_model:val('model'),htf_bias:val('bias'),draw_on_liquidity:val('dol'),liquidity_sweep:document.querySelector('#trade input[name="sweep"]')?.checked?'YES':'',structure:val('structure'),pd_array:val('array'),kill_zone:val('kz'),notes:val('notes'),risk_pct:Number(val('risk'))||null,invalidation:val('invalid'),realized_r:val('realizedR')!==''?Number(val('realizedR')):null,pnl:val('pnl')!==''?Number(val('pnl')):null};
+ try{await api('/api/trades',{method:'POST',body:JSON.stringify(payload)});await syncFromDatabase();setApiStatus('Saved to PostgreSQL');return true}catch(e){setApiStatus('Database save failed');return false}
+}
+const _savePlan=savePlan;
+savePlan=async function(){const before=state.plans.length;_savePlan();const ok=await savePlanToDatabase();if(ok)alert('Trade plan saved to Journal + PostgreSQL.');};
+async function requestAIReview(){
+ const payload={methodology:'ICT',trade:{model:val('model'),bias:val('bias'),drawOnLiquidity:val('dol'),killZone:val('kz'),structure:val('structure'),pdArray:val('array'),entry:val('entry'),stop:val('sl'),target:val('target'),risk:val('risk'),invalidation:val('invalid'),notes:val('notes')},checklist:[...document.querySelectorAll('#checks input')].map(x=>({label:x.parentElement?.innerText||'',checked:x.checked}))};
+ try{const r=await api('/api/ai/review',{method:'POST',body:JSON.stringify({...payload,user_id:V17.userId})});const box=document.getElementById('review');if(box)box.innerHTML=`<b class="good">AI Review received</b><pre class="jsonbox">${JSON.stringify(r,null,2)}</pre>`;setApiStatus('AI review connected')}catch(e){reviewAI();setApiStatus('AI adapter not configured — local review used')}
+}
+window.addEventListener('load',()=>{const host=document.querySelector('#production .section-head');if(host&&!document.getElementById('v17Status')){const x=document.createElement('div');x.id='v17Status';x.className='pill';x.textContent='Connecting…';host.appendChild(x)}bootstrapRealData()});
+</script>
+
+
+<script id="v18-auth">
+let authMode='login';
+function setAuthMode(mode){authMode=mode;document.getElementById('authTitle').textContent=mode==='login'?'Sign in to your private ICT workspace.':'Create your private ICT trading workspace.';document.getElementById('authSubmit').textContent=mode==='login'?'Sign in':'Create account';document.getElementById('loginTab').className='btn '+(mode==='login'?'primary':'');document.getElementById('registerTab').className='btn '+(mode==='register'?'primary':'');document.getElementById('authNameWrap').style.display=mode==='register'?'block':'none';document.getElementById('authError').textContent='';}
+function openAuth(show=true){if(show)document.getElementById('authModal').classList.remove('hidden');else document.getElementById('authModal').classList.add('hidden');}
+function setAuthUI(user){const badge=document.getElementById('authUser'),btn=document.getElementById('authAction');if(user){badge.textContent=user.display_name||user.email;btn.textContent='Sign out';btn.onclick=signOut;}else{badge.textContent='Not signed in';btn.textContent='Sign in';btn.onclick=()=>openAuth(true)}}
+async function submitAuth(e){e.preventDefault();const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,name=document.getElementById('authName').value.trim();try{const path=authMode==='login'?'/api/auth/login':'/api/auth/register';const body=authMode==='login'?{email,password}:{email,password,display_name:name||'ICT Trader',timezone:Intl.DateTimeFormat().resolvedOptions().timeZone};const r=await api(path,{method:'POST',body:JSON.stringify(body)});localStorage.setItem('trademind_access_token',r.token);localStorage.setItem('trademind_user_id',r.user.id);V17.userId=r.user.id;V17.ready=true;setAuthUI(r.user);openAuth(false);setApiStatus('Secure session active');await syncFromDatabase();}catch(err){document.getElementById('authError').textContent=err.message||'Authentication failed'}}
+async function signOut(){try{await api('/api/auth/logout',{method:'POST'})}catch(e){}localStorage.removeItem('trademind_access_token');localStorage.removeItem('trademind_user_id');V17.userId=null;V17.ready=false;setAuthUI(null);setApiStatus('Signed out — local mode');}
+window.addEventListener('load',()=>{setAuthMode('login');const token=localStorage.getItem('trademind_access_token');if(token)bootstrapRealData();});
+</script>
+</body></html>
